@@ -1,0 +1,15 @@
+{
+    "name": "time.txt",
+    "version": "0.0.1",
+    "description": "simple text file based personal time tracker",
+    "main": "app.js",
+    "author": "galczo5 <kamil.galek@gmail.com>",
+    "license": "MIT",
+    "bin": {
+        "time.txt": "./src/app.js"
+    },
+    "dependencies": {
+        "colors": "^1.3.2",
+        "moment": "^2.22.2"
+    }
+}
