@@ -1,0 +1,19 @@
+#+TITLE: time.txt - simple, text-based time tracking app inspired by todo.txt project
+
+* Build and install
+// TODO
+
+* Quick start
+// TODO
+
+* Manual
+// TODO
+
+* Demo
+// TODO
+
+* Contribution
+// TODO
+
+* License
+MIT, see [[./license.org]]
