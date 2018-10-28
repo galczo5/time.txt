@@ -1,6 +1,6 @@
 {
     "name": "time.txt",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "simple text file based personal time tracker",
     "homepage": "https://github.com/galczo5/time.txt",
     "main": "app.js",
