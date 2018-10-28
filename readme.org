@@ -1,8 +1,19 @@
 #+TITLE: time.txt - simple, text-based time tracking app inspired by todo.txt project
 
 * Build and install
-// TODO
+Install via npm/yarn:
+#+BEGIN_SRC javascript
+npm install time.txt -g
+yarn add time.txt -g
+#+END_SRC
 
+Manual build:
+#+BEGIN_SRC javascript
+git clone https://github.com/galczo5/time.txt.git
+cd time.txt
+npm install
+npm install -g
+#+END_SRC
 * Quick start
 // TODO
 

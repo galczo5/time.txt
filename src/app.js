@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const PROGRAM_VERSION = '0.0.2'
+const PROGRAM_VERSION = require('../package.json').version;
 const program = require('commander');
 const moment = require('moment');
 const File = require('./file.js');
