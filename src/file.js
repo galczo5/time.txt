@@ -4,6 +4,7 @@ const moment = require('moment');
 const Entry = require('./entry.js');
 const GLOBAL = require('./globals.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');
+const PRINT_MODES = require('./printModes.js');
 const TimelineEntry = require('./timelineEntry.js');
 const ByTagDifference = require('./byTagDifference.js');
 
@@ -46,23 +47,36 @@ class File {
         fs.writeFileSync(this.filePath, fileText);
     }
 
-    printRaport(filter = []) {
+    printReport(printMode) {
         let timeline = this.getTimeline(this.entries);
         let tags = this.getByTags(this.entries);
 
-        if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.TEXT) {
-            timeline.forEach(x => console.log(x.toString()));
-            tags.forEach(x => console.log(x.toString()));
-        }
+        if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.TEXT)
+            this.printTextReport(timeline, tags, printMode);
 
-        else if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.JSON) {
-            console.log(JSON.stringify({
-                timeline,
-                tags
-            }));
-        }
+        else if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.JSON)
+            this.printJsonReport(timeline, tags, printMode);
     }
 
+    printTextReport(timeline, tags, printMode) {
+        if (printMode === true || printMode === PRINT_MODES.TIMELINE)
+            timeline.forEach(x => console.log(x.toString()));
+
+        if (printMode === true || printMode === PRINT_MODES.TAGS)
+            tags.forEach(x => console.log(x.toString()));
+    }
+
+    printJsonReport(timeline, tags, printMode) {
+        let obj = {};
+
+        if (printMode === true || printMode === PRINT_MODES.TIMELINE)
+            obj.timeline = timeline;
+
+        if (printMode === true || printMode === PRINT_MODES.TAGS)
+            obj.tags = tags;
+
+        console.log(JSON.stringify(obj));
+    }
 
     getTimeline(entries) {
         let timelineEntries = [];

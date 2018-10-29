@@ -8,6 +8,7 @@ const Entry = require('./entry.js');
 const Settings = require('./settings.js');
 const GLOBAL = require('./globals.js');
 const colors = require('colors');
+const OUTPUT_FORMAT = require('./outputFormat.js');
 
 program.option('-d <dir>', '[required]'.bold + ' sets working directory')
     .option('-h [12,24]', 'sets hour format, default 24')
@@ -15,7 +16,7 @@ program.option('-d <dir>', '[required]'.bold + ' sets working directory')
     .option('-o [text,json]', 'sets output format, default: text')
     .option('start <name>', 'starts new activity')
     .option('stop', 'stops current activity')
-    .option('show', 'shows report')
+    .option('show [timeline,tags]', 'shows report, default: both')
     .version(PROGRAM_VERSION, '-v, --version')
     .parse(process.argv);
 
@@ -26,7 +27,13 @@ if (!program.start && !program.stop && !program.show) {
 
 if (!program.D) {
     console.log('Please set working directory.');
-    console.log('Execute '+ '"time.txt --help"'.bold + ' to see manual.')
+    console.log('Execute '+ '"time.txt --help"'.bold + ' to see manual.');
+    return;
+}
+
+if (program.O && Object.values(OUTPUT_FORMAT).indexOf(program.O) === -1) {
+    console.log('Invalid output format: ' + program.O.bold.red);
+    console.log('Please set one of valid values [text, json].');
     return;
 }
 
@@ -46,5 +53,5 @@ else if (program.stop) {
 }
 
 else if (program.show) {
-    f.printRaport();
+    f.printReport(program.show);
 }
