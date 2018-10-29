@@ -3,23 +3,9 @@ const colors = require('colors');
 const moment = require('moment');
 const Entry = require('./entry.js');
 const GLOBAL = require('./globals.js');
-
-class ByTagDifference {
-    constructor(h, m) {
-        this.hours = h;
-        this.minutes = m;
-    }
-
-    addTime(h, m) {
-        this.hours += h;
-        this.minutes += m;
-
-        if (this.minutes > 60) {
-            this.hours++;
-            this.minutes %= 60;
-        }
-    }
-}
+const OUTPUT_FORMAT = require('./outputFormat.js');
+const TimelineEntry = require('./timelineEntry.js');
+const ByTagDifference = require('./byTagDifference.js');
 
 class File {
     constructor(filePath) {
@@ -60,24 +46,37 @@ class File {
         fs.writeFileSync(this.filePath, fileText);
     }
 
-    printRaport(tags = []) {
-        this.printTimeline(this.entries);
-        console.log('--');
-        this.printByTags(this.entries);
+    printRaport(filter = []) {
+        let timeline = this.getTimeline(this.entries);
+        let tags = this.getByTags(this.entries);
+
+        if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.TEXT) {
+            timeline.forEach(x => console.log(x.toString()));
+            tags.forEach(x => console.log(x.toString()));
+        }
+
+        else if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.JSON) {
+            console.log(JSON.stringify({
+                timeline,
+                tags
+            }));
+        }
     }
 
 
-    printTimeline(entries) {
+    getTimeline(entries) {
+        let timelineEntries = [];
         for (let i = 0; i < entries.length; i++) {
             if (entries[i].stop)
                 continue;
 
-            let { text, period, timeDiff } = this.getEntriesProps(entries, i);
-            console.log(`${period} ${timeDiff} ${text}`);
+            timelineEntries.push(new TimelineEntry(entries[i], entries[i + 1]));
         }
+
+        return timelineEntries;
     }
 
-    printByTags(entries) {
+    getByTags(entries) {
         let byTags = {};
         for (let i = 0; i < entries.length; i++) {
             if (entries[i].stop)
@@ -86,15 +85,16 @@ class File {
             let { hoursDiff, minutesDiff } = this.getEntriesProps(entries, i);
 
             entries[i].tags.forEach(t => {
-                if (t in byTags)
+                if (t in byTags) {
                     byTags[t].addTime(hoursDiff, minutesDiff);
-                else
-                    byTags[t] = new ByTagDifference(hoursDiff, minutesDiff);
+                    return;
+                }
+
+                byTags[t] = new ByTagDifference(t, hoursDiff, minutesDiff);
             });
         }
 
-        for (let t in byTags)
-            console.log(`[${byTags[t].hours}h ${byTags[t].minutes}m] ${t.bold.red} `);
+        return Object.values(byTags);
     }
 
     getEntriesProps(entries, i) {
@@ -105,15 +105,7 @@ class File {
         let hoursDiff = endHour.diff(startHour, 'hours');
         let minutesDiff = endHour.diff(startHour, 'minutes') % 60;
 
-        let period = `${thisEntry.hour} - ${nextEntry ? nextEntry.hour : ''}`;
-        let timeDiff = `[${hoursDiff}h ${minutesDiff}m]`.bold.green;
-
-        let text = thisEntry.name
-                            .split(' ')
-                            .map(x => x.startsWith('+') ? x.bold.red : x)
-                            .join(' ');
-
-        return { text, period, timeDiff, hoursDiff, minutesDiff };
+        return { hoursDiff, minutesDiff };
     }
 }
 

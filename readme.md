@@ -64,14 +64,15 @@ tt stop -f '2018-10-28 16:20'
 Usage: time.txt [options]
 
 Options:
-  -d <dir>       [required] sets working directory
-  -h [12,24]     sets hour format, default 24
-  -f <date>      sets date, default: today
-  start <name>   starts new activity
-  stop           stops current activity
-  show           shows report
-  -v, --version  output the version number
-  -h, --help     output usage information
+  -d <dir>        [required] sets working directory
+  -h [12,24]      sets hour format, default 24
+  -f <date>       sets date, default: today
+  -o [text,json]  sets output format, default: text
+  start <name>    starts new activity
+  stop            stops current activity
+  show            shows report
+  -v, --version   output the version number
+  -h, --help      output usage information
 ```
 
 ## Contribution

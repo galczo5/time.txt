@@ -12,6 +12,7 @@ const colors = require('colors');
 program.option('-d <dir>', '[required]'.bold + ' sets working directory')
     .option('-h [12,24]', 'sets hour format, default 24')
     .option('-f <date>', 'sets date, default: today')
+    .option('-o [text,json]', 'sets output format, default: text')
     .option('start <name>', 'starts new activity')
     .option('stop', 'stops current activity')
     .option('show', 'shows report')
@@ -29,7 +30,7 @@ if (!program.D) {
     return;
 }
 
-GLOBAL.SETTINGS = new Settings(program.D, program.F, program.H);
+GLOBAL.SETTINGS = new Settings(program.D, program.F, program.H, program.O);
 
 let f = new File(GLOBAL.SETTINGS.filePath);
 f.load();
