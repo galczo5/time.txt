@@ -4,7 +4,7 @@
 Install via npm/yarn:
 ```
 npm install time.txt -g
-yarn add time.txt -g
+yarn global add time.txt
 ```
 
 Manual build:
@@ -36,7 +36,7 @@ tt stop
 
 You don't have to manually stop every activity, you can just start another one.
 
-Every acrivity can have multiple tags. Tags are words with started with `+` sign. ***Tags are case-sensitive!***
+Every acrivity can have multiple tags. Tags are words with started with `+` sign. **Tags are case-sensitive!**
 ```
 tt start "open source +development, bugfixing +time.txt, +js"
 ```
