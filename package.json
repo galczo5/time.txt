@@ -10,9 +10,6 @@
         "type": "git",
         "url": "git+https://github.com/galczo5/time.txt.git"
     },
-    "engines": {
-        "node": ">=11"
-    },
     "preferGlobal": true,
     "bin": {
         "time.txt": "./src/app.js"
