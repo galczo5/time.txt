@@ -59,10 +59,10 @@ class File {
     }
 
     printTextReport(timeline, tags, printMode) {
-        if (printMode === true || printMode === PRINT_MODES.TIMELINE)
+        if (!printMode || printMode === PRINT_MODES.TIMELINE)
             timeline.forEach(x => console.log(x.toString()));
 
-        if (printMode === true || printMode === PRINT_MODES.TAGS)
+        if (!printMode || printMode === PRINT_MODES.TAGS)
             tags.forEach(x => console.log(x.toString()));
     }
 

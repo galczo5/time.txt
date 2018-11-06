@@ -10,48 +10,60 @@ const GLOBAL = require('./globals.js');
 const colors = require('colors');
 const OUTPUT_FORMAT = require('./outputFormat.js');
 
-program.option('-d <dir>', '[required]'.bold + ' sets working directory')
-    .option('-h [12,24]', 'sets hour format, default 24')
-    .option('-f <date>', 'sets date, default: today')
-    .option('-o [text,json]', 'sets output format, default: text')
-    .option('start <name>', 'starts new activity')
-    .option('stop', 'stops current activity')
-    .option('show [timeline,tags]', 'shows report, default: both')
-    .version(PROGRAM_VERSION, '-v, --version')
-    .parse(process.argv);
+program.option('--dir <dir>', '[required]'.bold + ' set working directory')
+    .description('time.txt - simple, text-based time tracking app inspired by todo.txt project')
+    .option('--hour-format [12,24]', 'set hour format, default 24')
+    .option('--date <date>', 'set date, default: today')
+    .version(PROGRAM_VERSION, '-v, --version');
 
-if (!program.start && !program.stop && !program.show) {
-    program.help();
-    return;
+program.command('show [timeline,tags]')
+    .description('show report, default: both')
+    .option('--output [text,json]', 'set output format, default: text')
+    .option('--date-from', 'set date from')
+    .option('--date-to', 'set date to')
+    .action((val, args) => {
+        initGlobals();
+        GLOBAL.SETTINGS.outputFormat = args.output || GLOBAL.SETTINGS.outputFormat;
+
+        let f = loadFile();
+        f.printReport(val);
+    });
+
+program.command('start <name>')
+    .description('start new activity')
+    .action((val, args) => {
+        initGlobals();
+        let f = loadFile();
+        addEntryAndSave(f, new Entry({
+            hour: GLOBAL.SETTINGS.hour,
+            name: val
+        }));
+    });
+
+program.command('stop')
+    .description('stop current activity')
+    .action((val, args) => {
+        initGlobals();
+        let f = loadFile();
+        addEntryAndSave(f, new Entry({
+            hour: GLOBAL.SETTINGS.hour,
+            name: GLOBAL.STOP_SIGN
+        }));
+    });
+
+program.parse(process.argv);
+
+function initGlobals() {
+    GLOBAL.SETTINGS = new Settings(program.dir, program.date, program.hourFormat);
 }
 
-if (!program.D) {
-    console.log('Please set working directory.');
-    console.log('Execute '+ '"time.txt --help"'.bold + ' to see manual.');
-    return;
+function loadFile() {
+    let f = new File(GLOBAL.SETTINGS.filePath);
+    f.load();
+    return f;
 }
 
-if (program.O && Object.values(OUTPUT_FORMAT).indexOf(program.O) === -1) {
-    console.log('Invalid output format: ' + program.O.bold.red);
-    console.log('Please set one of valid values [text, json].');
-    return;
-}
-
-GLOBAL.SETTINGS = new Settings(program.D, program.F, program.H, program.O);
-
-let f = new File(GLOBAL.SETTINGS.filePath);
-f.load();
-
-if (program.start) {
-    f.addEntry(new Entry({ hour: GLOBAL.SETTINGS.hour, name: program.start }));
+function addEntryAndSave(f, entry) {
+    f.addEntry(entry);
     f.save();
-}
-
-else if (program.stop) {
-    f.addEntry(new Entry({ hour: GLOBAL.SETTINGS.hour, name: GLOBAL.STOP_SIGN }));
-    f.save();
-}
-
-else if (program.show) {
-    f.printReport(program.show);
 }

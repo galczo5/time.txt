@@ -10,7 +10,7 @@ const HOUR_FORMATS = {
 };
 
 class Settings {
-    constructor(directory, date, hourFormat, outputFormat) {
+    constructor(directory, date, hourFormat) {
         this.hourFormat = hourFormat || 24;
         this.date = date || GLOBAL.NOW;
         this.fileName = moment(date).format('YYYYMMDD') + '.txt';
@@ -19,7 +19,7 @@ class Settings {
         this.hourFormatString = HOUR_FORMATS[this.hourFormat];
         this.hour = moment(this.date).format(this.hourFormatString);
 
-        this.outputFormat = outputFormat || OUTPUT_FORMAT.TEXT;
+        this.outputFormat = OUTPUT_FORMAT.TEXT;
     }
 }
 

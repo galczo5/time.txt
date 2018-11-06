@@ -12,7 +12,8 @@
     },
     "preferGlobal": true,
     "bin": {
-        "time.txt": "./src/app.js"
+        "time.txt": "./src/app.js",
+        "timetxt": "./src/app.js"
     },
     "dependencies": {
         "colors": "^1.3.2",
