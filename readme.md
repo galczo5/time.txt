@@ -16,12 +16,12 @@ npm install -g
 ```
 
 ## Quick start
-Add `-d` flag to set working directory. Optionally set `-h` flag to `12`, if you want to have hours in US format.
+Add `--dir` flag to set working directory. Optionally set `--hour-format` flag to `12`, if you want to have hours in US format.
 
 TIP: Configure everything with alias:
 
 ```
-alias tt='time.txt -d ~/Dropbox/tt'
+alias tt='timetxt --dir ~/Dropbox/tt'
 ```
 
 To start new activity execute `start` command:
@@ -41,38 +41,48 @@ Every acrivity can have multiple tags. Tags are words with started with `+` sign
 tt start "open source +development, bugfixing +time.txt, +js"
 ```
 
-To show raport use `show` command:
+To show text raport use `show` command:
 ```
 tt show
 
 Example result:
-16:04 - 16:06 [0h 2m] readme.md for time.txt
+2018-10-19
+16:04 - 16:06 [0h 2m] readme.md for +time.txt
 16:14 - 16:23 [0h 9m] open source +development, bugfixing +time.txt, +js
---
 [0h 9m] +development, 
-[0h 9m] +time.txt, 
+[0h 11m] +time.txt, 
 [0h 9m] +js 
 ```
 
-If you want to start or stop activity for date different than current hour, you can force date with `-f` flag or edit text file.
+If you want to start or stop activity for date different than current hour, you can force date with `--date` flag or edit text file.
 ```
-tt stop -f '2018-10-28 16:20'
+tt stop --date '2018-10-28 16:20'
 ```
 
 ## Manual
 ```
-Usage: time.txt [options]
-
+Usage: timetxt [options] [command]
 Options:
-  -d <dir>              [required] sets working directory
-  -h [12,24]            sets hour format, default 24
-  -f <date>             sets date, default: today
-  -o [text,json]        sets output format, default: text
-  start <name>          starts new activity
-  stop                  stops current activity
-  show [timeline,tags]  shows report, default: both
-  -v, --version         output the version number
+  --dir <dir>                     [required] set working directory
+  --hour-format [12,24]           set hour format, default 24
+  --date-format <format>          set date format, default "YYYY-MM-DD"
+  --date <date>                   set date, default: today
+  -v, --version                   output the version number
+  -h, --help                      output usage information
+
+Commands:
+  show [options] [timeline,tags]  show report, default: both
+  start <name>                    start new activity
+  stop                            stop current activity
+  
+---
+show [options] [timeline,tags]
+Options:
+  --output [text,json]  set output format, default: text
+  --date-from <date>    set date from
+  --date-to <date>      set date to
   -h, --help            output usage information
+
 ```
 
 ## Contribution
