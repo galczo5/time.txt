@@ -10,7 +10,7 @@ class ByTagDifference {
         this.minutes += m;
 
         if (this.minutes > 60) {
-            this.hours++;
+            this.hours = Math.floor(m / 60);
             this.minutes %= 60;
         }
     }

@@ -48,8 +48,8 @@ class File {
     }
 
     printReport(printMode) {
-        let timeline = this.getTimeline(this.entries);
-        let tags = this.getByTags(this.entries);
+        let timeline = this.getTimeline();
+        let tags = this.getByTags();
 
         if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.TEXT)
             this.printTextReport(timeline, tags, printMode);
@@ -78,27 +78,27 @@ class File {
         console.log(JSON.stringify(obj));
     }
 
-    getTimeline(entries) {
+    getTimeline() {
         let timelineEntries = [];
-        for (let i = 0; i < entries.length; i++) {
-            if (entries[i].stop)
+        for (let i = 0; i < this.entries.length; i++) {
+            if (this.entries[i].stop)
                 continue;
 
-            timelineEntries.push(new TimelineEntry(entries[i], entries[i + 1]));
+            timelineEntries.push(new TimelineEntry(this.entries[i], this.entries[i + 1]));
         }
 
         return timelineEntries;
     }
 
-    getByTags(entries) {
+    getTags() {
         let byTags = {};
-        for (let i = 0; i < entries.length; i++) {
-            if (entries[i].stop)
+        for (let i = 0; i < this.entries.length; i++) {
+            if (this.entries[i].stop)
                 continue;
 
-            let { hoursDiff, minutesDiff } = this.getEntriesProps(entries, i);
+            let { hoursDiff, minutesDiff } = this.getEntriesProps(this.entries, i);
 
-            entries[i].tags.forEach(t => {
+            this.entries[i].tags.forEach(t => {
                 if (t in byTags) {
                     byTags[t].addTime(hoursDiff, minutesDiff);
                     return;
