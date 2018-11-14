@@ -63,24 +63,26 @@ tt stop --date '2018-10-28 16:20'
 ```
 Usage: timetxt [options] [command]
 Options:
-  --dir <dir>                     [required] set working directory
-  --hour-format [12,24]           set hour format, default 24
-  --date-format <format>          set date format, default "YYYY-MM-DD"
-  --date <date>                   set date, default: today
-  -v, --version                   output the version number
-  -h, --help                      output usage information
+  --dir <dir>                          [required] set working directory
+  --hour-format [12,24]                set hour format, default 24
+  --date-format <format>               set date format, default "YYYY-MM-DD"
+  --date <date>                        set date, default: today
+  --case-insensitive-tags              set case insensitive tags, default: disabled
+  -v, --version                        output the version number
+  -h, --help                           output usage information
 
 Commands:
-  show [options] [timeline,tags]  show report, default: both
-  start <name>                    start new activity
-  stop                            stop current activity
+  show [options] [timeline,tags,both]  show report, default: both
+  start <name>                         start new activity
+  stop                                 stop current activity
   
 ---
 show [options] [timeline,tags]
 Options:
   --output [text,json]  set output format, default: text
-  --date-from <date>    set date from
-  --date-to <date>      set date to
+  --date-from <date>    set report date from
+  --date-to <date>      set report date to
+  --filter <tags>       set filter by tags, value can be separated with ; sign
   -h, --help            output usage information
 
 ```
