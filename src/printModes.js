@@ -16,5 +16,7 @@ module.exports = {
             return PRINT_MODES.TIMELINE;
         else if (str === PRINT_MODES.TAGS)
             return PRINT_MODES.TAGS;
+        else if (str === PRINT_MODES.BOTH)
+            return PRINT_MODES.BOTH;
     }
 };

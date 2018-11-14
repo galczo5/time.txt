@@ -28,23 +28,29 @@ class Report {
         }
     }
 
-    getTimeline() {
+    getTimeline(filter = null) {
         let result = {};
         this.files.forEach(f => {
             f.file.load();
-            result[f.date.format(GLOBAL.SETTINGS.dateFormat)] = f.file.getTimeline();
+
+            let key = f.date.format(GLOBAL.SETTINGS.dateFormat);
+            result[key] = f.file.getTimeline()
+                .filter(x => !filter || filter.some(f => x.tags.includes(f)));
         });
 
         return result;
     }
 
-    getTags() {
+    getTags(filter = null) {
         let result = {};
         this.files.forEach(f => {
             f.file.load();
             let tags = f.file.getTags();
 
             tags.forEach(t => {
+                if (filter && !filter.includes(t.tag))
+                    return;
+
                 if (t.tag in result)
                     result[t.tag].addTime(t.hours, t.minutes);
                 else
@@ -52,25 +58,29 @@ class Report {
             });
         });
 
-        return Object.values(result);
+        return Object.values(result).filter(x => x.length !== 0);
     }
 
-    print() {
-        if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.TEXT)
-            this.printTextReport();
+    print(filter, outputFormat) {
+        let timeline = this.getTimeline(filter);
+        let tags = this.getTags(filter);
 
-        else if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.JSON)
-            this.printJsonReport();
+        if (outputFormat === OUTPUT_FORMAT.TEXT)
+            this.printTextReport(timeline, tags);
+
+        else if (outputFormat === OUTPUT_FORMAT.JSON)
+            this.printJsonReport(timeline, tags);
     }
 
-    printTextReport() {
+    printTextReport(timeline, tags) {
         if (this.printMode === PRINT_MODE.TIMELINE || this.printMode === PRINT_MODE.BOTH) {
-            let timeline = this.getTimeline();
+
             Object.keys(timeline).forEach(key => {
                 if (timeline[key].length === 0)
                     return;
 
                 console.log(key.bold.red);
+
                 timeline[key].forEach(x => {
                     console.log(x.toString());
                 });
@@ -78,22 +88,19 @@ class Report {
         }
 
         if (this.printMode === PRINT_MODE.TAGS || this.printMode === PRINT_MODE.BOTH) {
-            let tags = this.getTags().filter(x => x.length !== 0);
             tags.forEach(x => {
                 console.log(x.toString());
             });
         }
     }
 
-    printJsonReport() {
+    printJsonReport(timeline, tags) {
         let result = {};
-        if (this.printMode === PRINT_MODE.TIMELINE || this.printMode === PRINT_MODE.BOTH) {
-            result.timeline = this.getTimeline();
-        }
+        if (this.printMode === PRINT_MODE.TIMELINE || this.printMode === PRINT_MODE.BOTH)
+            result.timeline = timeline;
 
-        if (this.printMode === PRINT_MODE.TAGS || this.printMode === PRINT_MODE.BOTH) {
-            result.tags = this.getTags().filter(x => x.length !== 0);
-        }
+        if (this.printMode === PRINT_MODE.TAGS || this.printMode === PRINT_MODE.BOTH)
+            result.tags = tags;
 
         console.log(JSON.stringify(result));
     }

@@ -21,8 +21,6 @@ class Settings {
 
         this.hourFormatString = HOUR_FORMATS[this.hourFormat];
         this.hour = moment(this.date).format(this.hourFormatString);
-
-        this.outputFormat = OUTPUT_FORMAT.TEXT;
     }
 }
 

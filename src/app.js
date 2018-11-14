@@ -19,17 +19,23 @@ program.option('--dir <dir>', '[required]'.bold + ' set working directory')
     .option('--date <date>', 'set date, default: today')
     .version(PROGRAM_VERSION, '-v, --version');
 
-program.command('show [timeline,tags]')
+program.command('show [timeline,tags,both]')
     .description('show report, default: both')
     .option('--output [text,json]', 'set output format, default: text')
-    .option('--date-from <date>', 'set date from')
-    .option('--date-to <date>', 'set date to')
+    .option('--date-from <date>', 'set report date from')
+    .option('--date-to <date>', 'set report date to')
+    .option('--filter <tags>', 'set filter by tags, value can be separated with ; sign')
     .action((val, args) => {
         initGlobals();
-        GLOBAL.SETTINGS.outputFormat = args.output || GLOBAL.SETTINGS.outputFormat;
+        let r = new Report(args.dateFrom || GLOBAL.SETTINGS.date,
+                           args.dateTo || GLOBAL.SETTINGS.date,
+                           PRINT_MODES.fromString(val));
 
-        let r = new Report(args.dateFrom, args.dateTo, PRINT_MODES.fromString(val));
-        r.print();
+        let filter = null;
+        if (args.filter)
+            filter = args.filter.split(';');
+
+        r.print(filter, args.output || OUTPUT_FORMAT.TEXT);
     });
 
 program.command('start <name>')

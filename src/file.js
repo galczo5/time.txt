@@ -47,37 +47,6 @@ class File {
         fs.writeFileSync(this.filePath, fileText);
     }
 
-    printReport(printMode) {
-        let timeline = this.getTimeline();
-        let tags = this.getByTags();
-
-        if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.TEXT)
-            this.printTextReport(timeline, tags, printMode);
-
-        else if (GLOBAL.SETTINGS.outputFormat === OUTPUT_FORMAT.JSON)
-            this.printJsonReport(timeline, tags, printMode);
-    }
-
-    printTextReport(timeline, tags, printMode) {
-        if (!printMode || printMode === PRINT_MODES.TIMELINE)
-            timeline.forEach(x => console.log(x.toString()));
-
-        if (!printMode || printMode === PRINT_MODES.TAGS)
-            tags.forEach(x => console.log(x.toString()));
-    }
-
-    printJsonReport(timeline, tags, printMode) {
-        let obj = {};
-
-        if (printMode === true || printMode === PRINT_MODES.TIMELINE)
-            obj.timeline = timeline;
-
-        if (printMode === true || printMode === PRINT_MODES.TAGS)
-            obj.tags = tags;
-
-        console.log(JSON.stringify(obj));
-    }
-
     getTimeline() {
         let timelineEntries = [];
         for (let i = 0; i < this.entries.length; i++) {
