@@ -17,6 +17,7 @@ program.option('--dir <dir>', '[required]'.bold + ' set working directory')
     .option('--hour-format [12,24]', 'set hour format, default 24')
     .option('--date-format <format>', 'set date format, default "YYYY-MM-DD"')
     .option('--date <date>', 'set date, default: today')
+    .option('--case-insensitive-tags', 'set case insensitive tags, default: disabled')
     .version(PROGRAM_VERSION, '-v, --version');
 
 program.command('show [timeline,tags,both]')
@@ -63,7 +64,7 @@ program.command('stop')
 program.parse(process.argv);
 
 function initGlobals() {
-    GLOBAL.SETTINGS = new Settings(program.dir, program.date, program.dateFormat, program.hourFormat);
+    GLOBAL.SETTINGS = new Settings(program.dir, program.date, program.dateFormat, program.hourFormat, program.caseInsensitiveTags);
 }
 
 function loadFile() {

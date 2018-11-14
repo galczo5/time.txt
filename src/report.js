@@ -6,6 +6,15 @@ const PRINT_MODE = require('./printModes.js');
 const GLOBAL = require('./globals.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');
 
+function matchTags(filter, tags) {
+    if (GLOBAL.SETTINGS.caseInsensitiveTags) {
+        tags = tags.map(x => x.toUpperCase());
+        filter = filter.map(x => x.toUpperCase());
+    }
+
+    return tags.some(t => filter.includes(t));
+}
+
 class Report {
     constructor(dateFrom, dateTo, printMode = PRINT_MODE.BOTH) {
         this.printMode = printMode;
@@ -35,7 +44,7 @@ class Report {
 
             let key = f.date.format(GLOBAL.SETTINGS.dateFormat);
             result[key] = f.file.getTimeline()
-                .filter(x => !filter || filter.some(f => x.tags.includes(f)));
+                .filter(x => !filter || matchTags(filter, x.tags));
         });
 
         return result;
@@ -48,7 +57,7 @@ class Report {
             let tags = f.file.getTags();
 
             tags.forEach(t => {
-                if (filter && !filter.includes(t.tag))
+                if (filter && !matchTags(filter, [t.tag]))
                     return;
 
                 if (t.tag in result)

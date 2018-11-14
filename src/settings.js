@@ -11,7 +11,7 @@ const HOUR_FORMATS = {
 };
 
 class Settings {
-    constructor(directory, date, dateFormat, hourFormat) {
+    constructor(directory, date, dateFormat, hourFormat, caseInsensitiveTags = false) {
         this.dateFormat = dateFormat || 'YYYY-MM-DD';
         this.hourFormat = hourFormat || 24;
         this.date = date || GLOBAL.NOW;
@@ -21,6 +21,7 @@ class Settings {
 
         this.hourFormatString = HOUR_FORMATS[this.hourFormat];
         this.hour = moment(this.date).format(this.hourFormatString);
+        this.caseInsensitiveTags = caseInsensitiveTags;
     }
 }
 
