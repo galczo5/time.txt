@@ -1,5 +1,5 @@
 const moment = require('moment');
-const GLOBAL = require('./globals.js');
+const SESSION = require('./session.js');
 
 class Entry {
     constructor({
@@ -8,10 +8,10 @@ class Entry {
         stop = null
     } = {}) {
         this.hour = hour;
-        this.name = stop ? GLOBAL.STOP_SIGN : name;
+        this.name = stop ? SESSION.STOP_SIGN : name;
         this.tags = [];
         this.processTags();
-        this.stop = stop || name.includes(GLOBAL.STOP_SIGN);
+        this.stop = stop || name.includes(SESSION.STOP_SIGN);
     }
 
     processTags() {
@@ -24,7 +24,7 @@ class Entry {
         this.hour =  chunks[0];
         this.name = chunks.slice(1, chunks.length).join(' ');
 
-        if (this.name.indexOf(GLOBAL.STOP_SIGN) !== -1)
+        if (this.name.includes(SESSION.STOP_SIGN))
             this.stop = true;
 
         this.processTags();
@@ -35,7 +35,7 @@ class Entry {
     }
 
     getMoment() {
-        return moment(this.hour, GLOBAL.SETTINGS.hourFormatString)
+        return moment(this.hour, SESSION.SETTINGS.hourFormatString);
     }
 }
 

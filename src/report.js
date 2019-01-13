@@ -2,12 +2,12 @@ const moment = require('moment');
 const FileUtils = require('./fileUtils.js');
 const File = require('./file.js');
 const colors = require('colors');
-const PRINT_MODE = require('./printModes.js');
-const GLOBAL = require('./globals.js');
+const PRINT_MODES = require('./printModes.js');
+const SESSION = require('./session.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');
 
 function matchTags(filter, tags) {
-    if (GLOBAL.SETTINGS.caseInsensitiveTags) {
+    if (SESSION.SETTINGS.caseInsensitiveTags) {
         tags = tags.map(x => x.toUpperCase());
         filter = filter.map(x => x.toUpperCase());
     }
@@ -16,46 +16,46 @@ function matchTags(filter, tags) {
 }
 
 class Report {
-    constructor(dateFrom, dateTo, printMode = PRINT_MODE.BOTH) {
-        this.printMode = printMode;
-        this.dateFrom = moment(dateFrom, GLOBAL.SETTINGS.dateFormat);
-        this.dateTo = moment(dateTo, GLOBAL.SETTINGS.dateFormat);
+    constructor(dateFrom, dateTo, outputFormat = OUTPUT_FORMAT.TEXT, printMode = PRINT_MODES.BOTH) {
+        this.outputFormat = outputFormat;
+        this.includeTimeline = PRINT_MODES.timelineActive(printMode);
+        this.includeTags = PRINT_MODES.tagsActive(printMode);
+
+        this.dateFrom = moment(dateFrom, SESSION.SETTINGS.dateFormat);
+        this.dateTo = moment(dateTo, SESSION.SETTINGS.dateFormat);
         this.files = [];
-        this.getFiles();
+
+        this.loadFiles();
     }
 
-    getFiles() {
+    loadFiles() {
         let diff = this.dateTo.diff(this.dateFrom, 'days');
-        let dir = GLOBAL.SETTINGS.directory;
+        let dir = SESSION.SETTINGS.directory;
         for (let i = 0; i <= diff; i++) {
-            let d = moment(this.dateFrom.toDate()).add(i, 'days');
-            let filePath = FileUtils.getFilePathFromDate(d.toDate(), dir);
-            this.files.push({
-                date: d,
-                file: new File(filePath)
-            });
+            let date = moment(this.dateFrom.toDate()).add(i, 'days');
+            let filePath = FileUtils.getFilePathFromDate(date.toDate(), dir);
+            let file = new File(filePath);
+
+            file.load();
+            this.files.push({ date, file });
         }
     }
 
     getTimeline(filter = null) {
         let result = {};
-        this.files.forEach(f => {
-            f.file.load();
-
-            let key = f.date.format(GLOBAL.SETTINGS.dateFormat);
-            result[key] = f.file.getTimeline()
+        for (let f of this.files) {
+            let key = f.date.format(SESSION.SETTINGS.dateFormat);
+            result[key] = f.file.getTimeline(filter)
                 .filter(x => !filter || matchTags(filter, x.tags));
-        });
+        }
 
         return result;
     }
 
     getTags(filter = null) {
         let result = {};
-        this.files.forEach(f => {
-            f.file.load();
-            let tags = f.file.getTags();
-
+        for (let f of this.files) {
+            let tags = f.file.getTags(filter);
             tags.forEach(t => {
                 if (filter && !matchTags(filter, [t.tag]))
                     return;
@@ -65,53 +65,49 @@ class Report {
                 else
                     result[t.tag] = t;
             });
-        });
+        }
 
         return Object.values(result).filter(x => x.length !== 0);
     }
 
-    print(filter, outputFormat) {
+    print(filter) {
         let timeline = this.getTimeline(filter);
         let tags = this.getTags(filter);
 
-        if (outputFormat === OUTPUT_FORMAT.TEXT)
+        if (this.outputFormat === OUTPUT_FORMAT.TEXT)
             this.printTextReport(timeline, tags);
-
-        else if (outputFormat === OUTPUT_FORMAT.JSON)
+        else if (this.outputFormat === OUTPUT_FORMAT.JSON)
             this.printJsonReport(timeline, tags);
+        else
+            throw 'invalid output format';
     }
 
     printTextReport(timeline, tags) {
-        if (this.printMode === PRINT_MODE.TIMELINE || this.printMode === PRINT_MODE.BOTH) {
-
-            Object.keys(timeline).forEach(key => {
-                if (timeline[key].length === 0)
+        if (this.includeTimeline) {
+            for (let date in timeline) {
+                let entries = timeline[date];
+                if (entries.length === 0)
                     return;
 
-                console.log(key.bold.red);
-
-                timeline[key].forEach(x => {
-                    console.log(x.toString());
-                });
-            });
+                console.log(date.bold.red);
+                entries.forEach(x => x.print());
+            }
         }
 
-        if (this.printMode === PRINT_MODE.TAGS || this.printMode === PRINT_MODE.BOTH) {
-            tags.forEach(x => {
-                console.log(x.toString());
-            });
-        }
+        if (this.includeTags)
+            tags.forEach(x => x.print());
     }
 
     printJsonReport(timeline, tags) {
         let result = {};
-        if (this.printMode === PRINT_MODE.TIMELINE || this.printMode === PRINT_MODE.BOTH)
+        if (this.includeTimeline)
             result.timeline = timeline;
 
-        if (this.printMode === PRINT_MODE.TAGS || this.printMode === PRINT_MODE.BOTH)
+        if (this.includeTags)
             result.tags = tags;
 
-        console.log(JSON.stringify(result));
+        const stringResult = JSON.stringify(result, null, 2);
+        console.log(stringResult);
     }
 }
 

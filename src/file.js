@@ -2,7 +2,6 @@ const fs = require('fs');
 const colors = require('colors');
 const moment = require('moment');
 const Entry = require('./entry.js');
-const GLOBAL = require('./globals.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');
 const PRINT_MODES = require('./printModes.js');
 const TimelineEntry = require('./timelineEntry.js');
@@ -35,8 +34,6 @@ class File {
                     return entry;
                 });
         }
-        else
-            fs.openSync(this.filePath, 'w');
 
         this.sortEntries();
     }

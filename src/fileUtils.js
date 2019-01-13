@@ -1,8 +1,6 @@
 const moment = require('moment');
 const path = require('path');
 
-const GLOBAL = require('./globals.js');
-
 function getFileNameFromDate(date) {
     return moment(date).format('YYYYMMDD') + '.txt';
 }

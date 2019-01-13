@@ -7,7 +7,7 @@ const File = require('./file.js');
 const Entry = require('./entry.js');
 const Settings = require('./settings.js');
 const Report = require('./report.js');
-const GLOBAL = require('./globals.js');
+const SESSION = require('./session.js');
 const colors = require('colors');
 const OUTPUT_FORMAT = require('./outputFormat.js');
 const PRINT_MODES = require('./printModes.js');
@@ -28,15 +28,16 @@ program.command('show [timeline,tags,both]')
     .option('--filter <tags>', 'set filter by tags, value can be separated with ; sign')
     .action((val, args) => {
         initGlobals();
-        let r = new Report(args.dateFrom || GLOBAL.SETTINGS.date,
-                           args.dateTo || GLOBAL.SETTINGS.date,
+        let r = new Report(args.dateFrom || SESSION.SETTINGS.date,
+                           args.dateTo || SESSION.SETTINGS.date,
+                           args.output || OUTPUT_FORMAT.TEXT,
                            PRINT_MODES.fromString(val));
 
         let filter = null;
         if (args.filter)
             filter = args.filter.split(';');
 
-        r.print(filter, args.output || OUTPUT_FORMAT.TEXT);
+        r.print(filter);
     });
 
 program.command('start <name>')
@@ -45,7 +46,7 @@ program.command('start <name>')
         initGlobals();
         let f = loadFile();
         addEntryAndSave(f, new Entry({
-            hour: GLOBAL.SETTINGS.hour,
+            hour: SESSION.SETTINGS.hour,
             name: val
         }));
     });
@@ -56,19 +57,19 @@ program.command('stop')
         initGlobals();
         let f = loadFile();
         addEntryAndSave(f, new Entry({
-            hour: GLOBAL.SETTINGS.hour,
-            name: GLOBAL.STOP_SIGN
+            hour: SESSION.SETTINGS.hour,
+            name: SESSION.STOP_SIGN
         }));
     });
 
 program.parse(process.argv);
 
 function initGlobals() {
-    GLOBAL.SETTINGS = new Settings(program.dir, program.date, program.dateFormat, program.hourFormat, program.caseInsensitiveTags);
+    SESSION.SETTINGS = new Settings(program.dir, program.date, program.dateFormat, program.hourFormat, program.caseInsensitiveTags);
 }
 
 function loadFile() {
-    let f = new File(GLOBAL.SETTINGS.filePath);
+    let f = new File(SESSION.SETTINGS.currentFilePath);
     f.load();
     return f;
 }

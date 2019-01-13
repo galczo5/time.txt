@@ -7,6 +7,14 @@ let PRINT_MODES = {
 module.exports = {
     ...PRINT_MODES,
 
+    timelineActive(printMode) {
+        return printMode === PRINT_MODES.TIMELINE || printMode === PRINT_MODES.BOTH;
+    },
+
+    tagsActive(printMode) {
+        return printMode === PRINT_MODES.TAGS || printMode === PRINT_MODES.BOTH;
+    },
+
     fromString(str) {
         if (!str)
             return PRINT_MODES.BOTH;
@@ -18,5 +26,7 @@ module.exports = {
             return PRINT_MODES.TAGS;
         else if (str === PRINT_MODES.BOTH)
             return PRINT_MODES.BOTH;
+
+        return null;
     }
 };
