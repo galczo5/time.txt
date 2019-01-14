@@ -17,7 +17,7 @@ module.exports = {
 
     fromString(str) {
         if (!str)
-            return PRINT_MODES.BOTH;
+            return PRINT_MODES.TIMELINE;
 
         str = str.toLowerCase();
         if (str === PRINT_MODES.TIMELINE)

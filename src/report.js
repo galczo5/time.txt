@@ -8,7 +8,6 @@ const PRINT_MODES = require('./printModes.js');
 const SESSION = require('./session.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');
 
-
 function matchTags(filter, tags) {
     if (SESSION.SETTINGS.caseInsensitiveTags) {
         tags = tags.map(x => x.toUpperCase());
@@ -38,9 +37,10 @@ class Report {
         for (let date of dateRange) {
             let filePath = FileUtils.getFilePathFromDate(date, dir);
             let file = new File(filePath);
-
             file.load();
-            this.files.push({ date, file });
+
+            let formattedDate = DateUtils.format(date);
+            this.files.push({ date: formattedDate, file });
         }
     }
 
@@ -92,7 +92,10 @@ class Report {
                 if (entries.length === 0)
                     return;
 
-                console.log(date.bold.red);
+                // Print header only when report includes more than one day
+                if (Object.keys(timeline).length != 1)
+                    console.log(date.bold.red);
+
                 entries.forEach(x => x.print());
             }
         }

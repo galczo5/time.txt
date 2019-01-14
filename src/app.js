@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
-const PROGRAM_VERSION = require('../package.json').version;
 const program = require('commander');
+const colors = require('colors');
+
+const PROGRAM_VERSION = require('../package.json').version;
+const OUTPUT_FORMAT = require('./outputFormat.js');
+const PRINT_MODES = require('./printModes.js');
+
 const File = require('./file.js');
 const Entry = require('./entry.js');
 const Settings = require('./settings.js');
 const Report = require('./report.js');
 const SESSION = require('./session.js');
-const colors = require('colors');
-const OUTPUT_FORMAT = require('./outputFormat.js');
-const PRINT_MODES = require('./printModes.js');
 
 program.option('--dir <dir>', '[required]'.bold + ' set working directory')
     .description('time.txt - simple, text-based time tracking app inspired by todo.txt project')
@@ -20,11 +22,12 @@ program.option('--dir <dir>', '[required]'.bold + ' set working directory')
     .version(PROGRAM_VERSION, '-v, --version');
 
 program.command('show [timeline,tags,both]')
-    .description('show report, default: both')
+    .description('show report, default: timeline')
     .option('--output [text,json]', 'set output format, default: text')
     .option('--date-from <date>', 'set report date from')
     .option('--date-to <date>', 'set report date to')
     .option('--filter <tags>', 'set filter by tags, value can be separated with ; sign')
+    .option('--no-color', 'disable colors')
     .action((val, args) => {
         initGlobals();
         let r = new Report(args.dateFrom || SESSION.SETTINGS.date,

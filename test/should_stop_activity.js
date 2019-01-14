@@ -3,10 +3,10 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 const utils = require('./utils.js');
 
+const testActivityText = 'test activity';
 const testDate = '2018-11-17 13:15';
 const testHour = '13:15';
 const testFileName = '20181117.txt';
-const stopSign = '---STOP---';
 
 function getPreparedCommand(dir) {
     return utils.commandBuilder()
@@ -14,7 +14,7 @@ function getPreparedCommand(dir) {
         .date(testDate);
 }
 
-describe('timetxt [options] stop', () => {
+describe('timetxt [options] start <name>', () => {
     let dir = null;
 
     beforeEach(() => {
@@ -23,7 +23,7 @@ describe('timetxt [options] stop', () => {
     });
 
     it('should create file', async () => {
-        let command = getPreparedCommand(dir).stop();
+        let command = getPreparedCommand(dir).start(testActivityText);
         await utils.sh(command);
 
         let fileExists = fs.existsSync(dir.path + testFileName);
@@ -32,12 +32,12 @@ describe('timetxt [options] stop', () => {
     });
 
     it('should create entry in file', async () => {
-        let command = getPreparedCommand(dir).stop();
+        let command = getPreparedCommand(dir).start(testActivityText);
         await utils.sh(command);
 
         let file = fs.readFileSync(dir.path + testFileName, 'utf8');
         file.should.include(testHour);
-        file.should.include(stopSign);
+        file.should.include(testActivityText);
         file.split('\n').length.should.equal(1);
         dir.remove();
     });
@@ -46,13 +46,13 @@ describe('timetxt [options] stop', () => {
         const oldActivity = '10:10 old activity name';
         fs.writeFileSync(dir.path + testFileName, oldActivity);
 
-        let command = getPreparedCommand(dir).stop();
+        let command = getPreparedCommand(dir).start(testActivityText);
 
         await utils.sh(command);
         let file = fs.readFileSync(dir.path + testFileName, 'utf8');
         file.should.include(oldActivity);
         file.should.include(testHour);
-        file.should.include(stopSign);
+        file.should.include(testActivityText);
         file.indexOf(oldActivity).should.be.below(file.indexOf(testHour));
         file.split('\n').length.should.equal(2);
         dir.remove();
@@ -63,13 +63,13 @@ describe('timetxt [options] stop', () => {
         const newerActivity = '15:10 newer activity name';
         fs.writeFileSync(dir.path + testFileName, oldActivity + '\n' + newerActivity);
 
-        let command = getPreparedCommand(dir).stop();
+        let command = getPreparedCommand(dir).start(testActivityText);
 
         await utils.sh(command);
         let file = fs.readFileSync(dir.path + testFileName, 'utf8');
         file.should.include(oldActivity);
         file.should.include(testHour);
-        file.should.include(stopSign);
+        file.should.include(testActivityText);
         file.indexOf(oldActivity).should.be.below(file.indexOf(testHour));
         file.indexOf(testHour).should.be.below(file.indexOf(newerActivity));
         file.split('\n').length.should.equal(3);
@@ -79,7 +79,7 @@ describe('timetxt [options] stop', () => {
     it('should use "12" hour format option', async () => {
         let command = getPreparedCommand(dir)
             .hourFormat(12)
-            .stop();
+            .start(testActivityText);
 
         await utils.sh(command);
         let file = fs.readFileSync(dir.path + testFileName, 'utf8');
@@ -90,7 +90,7 @@ describe('timetxt [options] stop', () => {
     it('should use "24" hour format option', async () => {
         let command = getPreparedCommand(dir)
             .hourFormat(24)
-            .stop();
+            .start(testActivityText);
 
         await utils.sh(command);
         let file = fs.readFileSync(dir.path + testFileName, 'utf8');

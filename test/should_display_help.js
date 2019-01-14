@@ -1,6 +1,7 @@
 const should = require('chai').should();
 const exec = require('child_process').exec;
 const fs = require('fs');
+
 const utils = require('./utils.js');
 
 describe('timetxt --help', () => {
@@ -24,19 +25,20 @@ describe('timetxt [command] --help', () => {
     });
 
     it('should display "stop" command help', async () => {
-        let result = await utils.sh('timetxt stop --help');
+        let result =  await utils.sh('timetxt stop --help');
         result.stdout.should.include('stop current activity');
         getOptionCount(result.stdout).should.equal(1);
     });
 
     it('should display "show" command help', async () => {
         let result = await utils.sh('timetxt show --help');
-        result.stdout.should.include('show report, default: both');
+        result.stdout.should.include('show report, default: timeline');
         result.stdout.should.include('--output');
         result.stdout.should.include('--date-from');
         result.stdout.should.include('--date-to');
         result.stdout.should.include('--filter');
-        getOptionCount(result.stdout).should.equal(5);
+        result.stdout.should.include('--no-color');
+        getOptionCount(result.stdout).should.equal(6);
     });
 });
 

@@ -2,7 +2,7 @@ const moment = require('moment');
 const SESSION = require('./session.js');
 
 function format(date) {
-    return moment(date, SESSION.SETTINGS.dateFormat);
+    return moment(date).format(SESSION.SETTINGS.dateFormat);
 }
 
 function getHour(date, hourFormat) {
