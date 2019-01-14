@@ -1,4 +1,3 @@
-const moment = require('moment');
 const SESSION = require('./session.js');
 
 class Entry {
@@ -32,10 +31,6 @@ class Entry {
 
     toString(settings) {
         return this.hour + ' ' + this.name;
-    }
-
-    getMoment() {
-        return moment(this.hour, SESSION.SETTINGS.hourFormatString);
     }
 }
 

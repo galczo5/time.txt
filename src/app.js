@@ -2,7 +2,6 @@
 
 const PROGRAM_VERSION = require('../package.json').version;
 const program = require('commander');
-const moment = require('moment');
 const File = require('./file.js');
 const Entry = require('./entry.js');
 const Settings = require('./settings.js');

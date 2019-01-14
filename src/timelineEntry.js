@@ -1,4 +1,5 @@
-const moment = require('moment');
+const DateUtils = require('./dateUtils.js');
+const SESSION = require('./session.js');
 
 class TimelineEntry {
     constructor(thisEntry, nextEntry) {
@@ -7,11 +8,11 @@ class TimelineEntry {
         this.hourFrom = thisEntry.hour;
         this.hourTo = nextEntry ? nextEntry.hour : '';
 
-        let startHour = thisEntry.getMoment();
-        let endHour = nextEntry ? nextEntry.getMoment() : moment();
+        // TODO:
+        let endHour = nextEntry ? nextEntry.hour : SESSION.SETTINGS.hour;
 
-        this.hoursDiff = endHour.diff(startHour, 'hours');
-        this.minutesDiff = endHour.diff(startHour, 'minutes') % 60;
+        this.hoursDiff = DateUtils.hoursDiff(thisEntry.hour, endHour);
+        this.minutesDiff = DateUtils.minutesDiff(thisEntry.hour, endHour) % 60;
     }
 
     toString() {

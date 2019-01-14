@@ -1,8 +1,8 @@
-const moment = require('moment');
+const DateUtils = require('./dateUtils.js');
 const path = require('path');
 
 function getFileNameFromDate(date) {
-    return moment(date).format('YYYYMMDD') + '.txt';
+    return DateUtils.toFileNameDateFormat(date) + '.txt';
 }
 
 function getFilePathFromDate(date, directory) {

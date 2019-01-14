@@ -1,6 +1,7 @@
-const moment = require('moment');
 const path = require('path');
+
 const FileUtils = require('./fileUtils.js');
+const DateUtils = require('./dateUtils.js');
 
 const SESSION = require('./session.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');
@@ -20,7 +21,7 @@ class Settings {
         this.currentFilePath = FileUtils.getFilePathFromDate(date, directory);
 
         this.hourFormatString = HOUR_FORMATS[this.hourFormat];
-        this.hour = moment(this.date).format(this.hourFormatString);
+        this.hour = DateUtils.getHour(this.date, this.hourFormatString);
         this.caseInsensitiveTags = caseInsensitiveTags;
     }
 }

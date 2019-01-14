@@ -1,11 +1,14 @@
 const fs = require('fs');
 const colors = require('colors');
-const moment = require('moment');
+
 const Entry = require('./entry.js');
-const OUTPUT_FORMAT = require('./outputFormat.js');
-const PRINT_MODES = require('./printModes.js');
 const TimelineEntry = require('./timelineEntry.js');
 const ByTagDifference = require('./byTagDifference.js');
+const DateUtils = require('./dateUtils.js');
+
+const SESSION = require('./session.js');
+const OUTPUT_FORMAT = require('./outputFormat.js');
+const PRINT_MODES = require('./printModes.js');
 
 class File {
     constructor(filePath) {
@@ -80,10 +83,12 @@ class File {
     getEntriesProps(entries, i) {
         let thisEntry = entries[i];
         let nextEntry = entries[i + 1];
-        let startHour = thisEntry.getMoment();
-        let endHour = nextEntry ? nextEntry.getMoment() : moment();
-        let hoursDiff = endHour.diff(startHour, 'hours');
-        let minutesDiff = endHour.diff(startHour, 'minutes') % 60;
+
+        // TODO:
+        let endHour = nextEntry ? nextEntry.hour : SESSION.SETTINGS.hour;
+
+        let hoursDiff = DateUtils.hoursDiff(thisEntry.hour, endHour);
+        let minutesDiff = DateUtils.minutesDiff(thisEntry.hour, endHour) % 60;
 
         return { hoursDiff, minutesDiff };
     }
