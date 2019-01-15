@@ -1,44 +1,41 @@
 const should = require('chai').should();
-const exec = require('child_process').exec;
-const fs = require('fs');
-
-const utils = require('./utils.js');
+const {help} = require('../src/app.js');
 
 describe('timetxt --help', () => {
-    it('should display help', async () => {
-        let result = await utils.sh('timetxt --help');
-        result.stdout.should.include('time.txt - simple, text-based time tracking app inspired by todo.txt project');
-        result.stdout.should.include('--dir');
-        result.stdout.should.include('--hour-format');
-        result.stdout.should.include('--date-format');
-        result.stdout.should.include('--date <date>');
-        result.stdout.should.include('--case-insensitive-tags');
-        getOptionCount(result.stdout).should.equal(7);
+    it('should display help', () => {
+        let result = help();
+        result.should.include('time.txt - simple, text-based time tracking app inspired by todo.txt project');
+        result.should.include('--dir');
+        result.should.include('--hour-format');
+        result.should.include('--date-format');
+        result.should.include('--date <date>');
+        result.should.include('--case-insensitive-tags');
+        getOptionCount(result).should.equal(7);
     });
 });
 
 describe('timetxt [command] --help', () => {
-    it('should display "start" command help', async () => {
-        let result = await utils.sh('timetxt start --help');
-        result.stdout.should.include('start new activity');
-        getOptionCount(result.stdout).should.equal(1);
+    it('should display "start" command help', () => {
+        let result = help('start');
+        result.should.include('start new activity');
+        getOptionCount(result).should.equal(1);
     });
 
-    it('should display "stop" command help', async () => {
-        let result =  await utils.sh('timetxt stop --help');
-        result.stdout.should.include('stop current activity');
-        getOptionCount(result.stdout).should.equal(1);
+    it('should display "stop" command help', () => {
+        let result = help('stop');
+        result.should.include('stop current activity');
+        getOptionCount(result).should.equal(1);
     });
 
-    it('should display "show" command help', async () => {
-        let result = await utils.sh('timetxt show --help');
-        result.stdout.should.include('show report, default: timeline');
-        result.stdout.should.include('--output');
-        result.stdout.should.include('--date-from');
-        result.stdout.should.include('--date-to');
-        result.stdout.should.include('--filter');
-        result.stdout.should.include('--no-color');
-        getOptionCount(result.stdout).should.equal(6);
+    it('should display "show" command help', () => {
+        let result = help('show');
+        result.should.include('show report, default: timeline');
+        result.should.include('--output');
+        result.should.include('--date-from');
+        result.should.include('--date-to');
+        result.should.include('--filter');
+        result.should.include('--no-color');
+        getOptionCount(result).should.equal(6);
     });
 });
 

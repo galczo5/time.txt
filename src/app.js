@@ -29,45 +29,65 @@ program.command('show [timeline,tags,both]')
     .option('--filter <tags>', 'set filter by tags, value can be separated with ; sign')
     .option('--no-color', 'disable colors')
     .action((val, args) => {
-        initGlobals();
-        let r = new Report(args.dateFrom || SESSION.SETTINGS.date,
-                           args.dateTo || SESSION.SETTINGS.date,
-                           args.output || OUTPUT_FORMAT.TEXT,
-                           PRINT_MODES.fromString(val));
-
-        let filter = null;
-        if (args.filter)
-            filter = args.filter.split(';');
-
-        r.print(filter);
+        show(val, args.dateFormat, args.dateTo, args.output, args.filter, program);
     });
 
 program.command('start <name>')
     .description('start new activity')
-    .action((val, args) => {
-        initGlobals();
-        let f = loadFile();
-        addEntryAndSave(f, new Entry({
-            hour: SESSION.SETTINGS.hour,
-            name: val
-        }));
-    });
+    .action((val, args) => start(val, program));
 
 program.command('stop')
     .description('stop current activity')
-    .action((val, args) => {
-        initGlobals();
-        let f = loadFile();
-        addEntryAndSave(f, new Entry({
-            hour: SESSION.SETTINGS.hour,
-            name: SESSION.STOP_SIGN
-        }));
-    });
+    .action((val, args) => stop(program));
 
 program.parse(process.argv);
 
-function initGlobals() {
-    SESSION.SETTINGS = new Settings(program.dir, program.date, program.dateFormat, program.hourFormat, program.caseInsensitiveTags);
+function show(type, dateFrom, dateTo, outputFormat, filter, settings) {
+    SESSION.SETTINGS = getSettings(settings);
+    let r = new Report(dateFrom || SESSION.SETTINGS.date,
+                       dateTo || SESSION.SETTINGS.date,
+                       outputFormat || OUTPUT_FORMAT.TEXT,
+                       PRINT_MODES.fromString(type));
+
+    let f = null;
+    if (filter)
+        f = filter.split(';');
+
+    r.print(f);
+}
+
+function start(name, settings) {
+    SESSION.SETTINGS = getSettings(settings);
+    let f = loadFile();
+    addEntryAndSave(f, new Entry({
+        hour: SESSION.SETTINGS.hour,
+        name: name
+    }));
+}
+
+function stop(settings) {
+    SESSION.SETTINGS = getSettings(settings);
+    let f = loadFile();
+    addEntryAndSave(f, new Entry({
+        hour: SESSION.SETTINGS.hour,
+        name: SESSION.STOP_SIGN
+    }));
+}
+
+function help(commandName) {
+    if (!commandName)
+        return program.helpInformation();
+
+    let command = program.commands.find(c => c._name === commandName);
+
+    if (command)
+        return command.helpInformation();
+
+    return null;
+}
+
+function getSettings({dir, date, dateFormat, hourFormat, caseInsensitiveTags}) {
+    return new Settings(dir, date, dateFormat, hourFormat, caseInsensitiveTags);
 }
 
 function loadFile() {
@@ -80,3 +100,10 @@ function addEntryAndSave(f, entry) {
     f.addEntry(entry);
     f.save();
 }
+
+module.exports = {
+    show,
+    start,
+    stop,
+    help
+};
