@@ -1,7 +1,7 @@
 const colors = require('colors');
 
-const DateUtils = require('./dateUtils.js');
-const FileUtils = require('./fileUtils.js');
+const DateUtils = require('../utils/dateUtils.js');
+const FileUtils = require('../utils/fileUtils.js');
 const File = require('./file.js');
 
 const PRINT_MODES = require('./printModes.js');

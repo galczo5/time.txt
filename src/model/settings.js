@@ -1,7 +1,7 @@
 const path = require('path');
 
-const FileUtils = require('./fileUtils.js');
-const DateUtils = require('./dateUtils.js');
+const FileUtils = require('../utils/fileUtils.js');
+const DateUtils = require('../utils/dateUtils.js');
 
 const SESSION = require('./session.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');

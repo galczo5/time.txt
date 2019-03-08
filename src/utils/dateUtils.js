@@ -1,5 +1,5 @@
 const moment = require('moment');
-const SESSION = require('./session.js');
+const SESSION = require('../model/session.js');
 
 function format(date) {
     return moment(date).format(SESSION.SETTINGS.dateFormat);

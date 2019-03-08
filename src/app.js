@@ -4,14 +4,14 @@ const program = require('commander');
 const colors = require('colors');
 
 const PROGRAM_VERSION = require('../package.json').version;
-const OUTPUT_FORMAT = require('./outputFormat.js');
-const PRINT_MODES = require('./printModes.js');
+const OUTPUT_FORMAT = require('./model/outputFormat.js');
+const PRINT_MODES = require('./model/printModes.js');
 
-const File = require('./file.js');
-const Entry = require('./entry.js');
-const Settings = require('./settings.js');
-const Report = require('./report.js');
-const SESSION = require('./session.js');
+const File = require('./model/file.js');
+const Entry = require('./model/entry.js');
+const Settings = require('./model/settings.js');
+const Report = require('./model/report.js');
+const SESSION = require('./model/session.js');
 
 program.option('--dir <dir>', '[required]'.bold + ' set working directory')
     .description('time.txt - simple, text-based time tracking app inspired by todo.txt project')

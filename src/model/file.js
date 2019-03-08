@@ -4,7 +4,7 @@ const colors = require('colors');
 const Entry = require('./entry.js');
 const TimelineEntry = require('./timelineEntry.js');
 const ByTagDifference = require('./byTagDifference.js');
-const DateUtils = require('./dateUtils.js');
+const DateUtils = require('../utils/dateUtils.js');
 
 const SESSION = require('./session.js');
 const OUTPUT_FORMAT = require('./outputFormat.js');

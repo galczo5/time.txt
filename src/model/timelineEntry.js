@@ -1,5 +1,5 @@
 const SESSION = require('./session.js');
-const DateUtils = require('./dateUtils.js');
+const DateUtils = require('../utils/dateUtils.js');
 
 class TimelineEntry {
     constructor(thisEntry, nextEntry) {
