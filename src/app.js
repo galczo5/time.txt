@@ -29,7 +29,8 @@ program.command('show [timeline,tags,both]')
     .option('--filter <tags>', 'set filter by tags, value can be separated with ; sign')
     .option('--no-color', 'disable colors')
     .action((val, args) => {
-        show(val, args.dateFormat, args.dateTo, args.output, args.filter, program);
+        let report = show(val, args.dateFormat, args.dateTo, args.output, args.filter, program);
+        console.log(report);
     });
 
 program.command('start <name>')
@@ -53,7 +54,7 @@ function show(type, dateFrom, dateTo, outputFormat, filter, settings) {
     if (filter)
         f = filter.split(';');
 
-    r.print(f);
+    return r.generate(f);
 }
 
 function start(name, settings) {

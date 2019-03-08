@@ -25,10 +25,10 @@ class TimelineEntry {
 
         let text = this.name
             .split(' ')
-            .map(x => x.startsWith('+') ? x.bold.red : x)
+            .map(x => x.startsWith('+') ? x : x)
             .join(' ');
 
-        return `${period} ${timeDiff.bold.green} ${text}`;
+        return `${period} ${timeDiff} ${text}`;
     }
 
     print() {

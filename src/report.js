@@ -73,38 +73,42 @@ class Report {
         return Object.values(result).filter(x => x.length !== 0);
     }
 
-    print(filter) {
+    generate(filter) {
         let timeline = this.getTimeline(filter);
         let tags = this.getTags(filter);
 
         if (this.outputFormat === OUTPUT_FORMAT.TEXT)
-            this.printTextReport(timeline, tags);
+            return this.textReport(timeline, tags);
         else if (this.outputFormat === OUTPUT_FORMAT.JSON)
-            this.printJsonReport(timeline, tags);
+            return this.jsonReport(timeline, tags);
         else
             throw 'invalid output format';
     }
 
-    printTextReport(timeline, tags) {
+    textReport(timeline, tags) {
+        let result = '';
+
         if (this.includeTimeline) {
             for (let date in timeline) {
                 let entries = timeline[date];
                 if (entries.length === 0)
-                    return;
+                    return '';
 
                 // Print header only when report includes more than one day
                 if (Object.keys(timeline).length != 1)
-                    console.log(date.bold.red);
+                    result += date + '\n';
 
-                entries.forEach(x => x.print());
+                entries.forEach(x => result += x.toString() + '\n');
             }
         }
 
         if (this.includeTags)
-            tags.forEach(x => x.print());
+            tags.forEach(x => result += x.toString() + '\n');
+
+        return result;
     }
 
-    printJsonReport(timeline, tags) {
+    jsonReport(timeline, tags) {
         let result = {};
         if (this.includeTimeline)
             result.timeline = timeline;
@@ -112,8 +116,7 @@ class Report {
         if (this.includeTags)
             result.tags = tags;
 
-        const stringResult = JSON.stringify(result, null, 2);
-        console.log(stringResult);
+        return JSON.stringify(result, null, 2);
     }
 }
 
