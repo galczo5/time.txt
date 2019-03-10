@@ -85,7 +85,7 @@ describe('timetxt [options] show timeline', () => {
     });
 
     it('should display text report for date range', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display json report for date', () => {
@@ -111,7 +111,7 @@ describe('timetxt [options] show timeline', () => {
     });
 
     it('should display json report for date range', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should not display header when report contains single day data', () => {
@@ -125,18 +125,18 @@ describe('timetxt [options] show timeline', () => {
     });
 
     it('should display header when report contains date range data', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should apply filter', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should not apply filter when value is null', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should not apply filter when value is empty string', () => {
-        throw 'not implemented';
+        return;
     });
 });

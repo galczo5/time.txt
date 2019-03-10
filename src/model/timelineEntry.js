@@ -1,4 +1,6 @@
-const SESSION = require('./session.js');
+const GLOBAL = require('./global.js');
+
+const Settings = require('./settings.js');
 const DateUtils = require('../utils/dateUtils.js');
 
 class TimelineEntry {
@@ -9,10 +11,10 @@ class TimelineEntry {
         this.hourTo = nextEntry ? nextEntry.hour : 'now';
 
         // TODO:
-        let endHour = nextEntry ? nextEntry.hour : SESSION.SETTINGS.hour;
+        let endHour = nextEntry ? nextEntry.hour : GLOBAL.settings.getHour();
 
-        this.hoursDiff = DateUtils.hoursDiff(thisEntry.hour, endHour);
-        this.minutesDiff = DateUtils.minutesDiff(thisEntry.hour, endHour) % 60;
+        this.hoursDiff = DateUtils.hoursDiff(thisEntry.hour, endHour, GLOBAL.settings.getHourFormatString());
+        this.minutesDiff = DateUtils.minutesDiff(thisEntry.hour, endHour, GLOBAL.settings.getHourFormatString()) % 60;
     }
 
     toString() {
@@ -20,7 +22,7 @@ class TimelineEntry {
         let timeDiff = `[${this.hoursDiff}h ${this.minutesDiff}m]`;
         timeDiff += ' '.repeat(9 - timeDiff.length);
 
-        const periodColumnLength = SESSION.SETTINGS.hourFormat === 24 ? 14 : 18;
+        const periodColumnLength = GLOBAL.settings.hourFormat === 24 ? 14 : 18;
         period += ' '.repeat(periodColumnLength - period.length);
 
         let text = this.name

@@ -1,17 +1,16 @@
 const moment = require('moment');
-const SESSION = require('../model/session.js');
 
-function format(date) {
-    return moment(date).format(SESSION.SETTINGS.dateFormat);
+function format(date, dateFormat) {
+    return moment(date).format(dateFormat);
 }
 
 function getHour(date, hourFormat) {
-    return moment(date).format(hourFormat || SESSION.SETTINGS.hourFormatString);
+    return moment(date).format(hourFormat);
 }
 
-function range(from, to) {
-    let fromMoment = moment(from, SESSION.SETTINGS.dateFormat);
-    let toMoment = moment(to, SESSION.SETTINGS.dateFormat);
+function range(from, to, dateFormat) {
+    let fromMoment = moment(from, dateFormat);
+    let toMoment = moment(to, dateFormat);
 
     let range = [];
 
@@ -28,19 +27,19 @@ function toFileNameDateFormat(date) {
     return moment(date).format('YYYYMMDD');
 }
 
-function diff(hourFrom, hourTo, diffType) {
-    let fromMoment = moment(hourFrom, SESSION.SETTINGS.hourFormatString);
-    let toMoment = moment(hourTo, SESSION.SETTINGS.hourFormatString);
+function diff(hourFrom, hourTo, hourFormat, diffType) {
+    let fromMoment = moment(hourFrom, hourFormat);
+    let toMoment = moment(hourTo, hourFormat);
 
     return toMoment.diff(fromMoment, diffType);
 }
 
-function hoursDiff(hourFrom, hourTo) {
-    return diff(hourFrom, hourTo, 'hours');
+function hoursDiff(hourFrom, hourTo, hourFormat) {
+    return diff(hourFrom, hourTo, hourFormat, 'hours');
 }
 
-function minutesDiff(hourFrom, hourTo) {
-    return diff(hourFrom, hourTo, 'minutes');
+function minutesDiff(hourFrom, hourTo, hourFormat) {
+    return diff(hourFrom, hourTo, hourFormat, 'minutes');
 }
 
 module.exports = {

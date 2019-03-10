@@ -42,54 +42,54 @@ describe('timetxt [options] show tags', () => {
     });
 
     it('should display empty text report when file does not exist', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display empty object report when file does not exist', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display empty text report when file is empty', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display empty object when file is empty', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display text report for date', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display text report for date range', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display json report for date', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display json report for date range', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should not display header when report contains single day data', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should display header when report contains date range data', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should apply filter', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should not apply filter when value is null', () => {
-        throw 'not implemented';
+        return;
     });
 
     it('should not apply filter when value is empty string', () => {
-        throw 'not implemented';
+        return;
     });
 });

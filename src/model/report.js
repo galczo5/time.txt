@@ -1,15 +1,16 @@
 const colors = require('colors');
 
+const PRINT_MODES = require('./printModes.js');
+const OUTPUT_FORMAT = require('./outputFormat.js');
+const GLOBAL = require('./global.js');
+
 const DateUtils = require('../utils/dateUtils.js');
 const FileUtils = require('../utils/fileUtils.js');
 const File = require('./file.js');
-
-const PRINT_MODES = require('./printModes.js');
-const SESSION = require('./session.js');
-const OUTPUT_FORMAT = require('./outputFormat.js');
+const Settings = require('./settings.js');
 
 function matchTags(filter, tags) {
-    if (SESSION.SETTINGS.caseInsensitiveTags) {
+    if (GLOBAL.settings.caseInsensitiveTags) {
         tags = tags.map(x => x.toUpperCase());
         filter = filter.map(x => x.toUpperCase());
     }
@@ -32,14 +33,14 @@ class Report {
     }
 
     loadFiles() {
-        let dir = SESSION.SETTINGS.directory;
-        let dateRange = DateUtils.range(this.dateFrom, this.dateTo);
+        let dir = GLOBAL.settings.directory;
+        let dateRange = DateUtils.range(this.dateFrom, this.dateTo, GLOBAL.settings.dateFormat);
         for (let date of dateRange) {
             let filePath = FileUtils.getFilePathFromDate(date, dir);
             let file = new File(filePath);
             file.load();
 
-            let formattedDate = DateUtils.format(date);
+            let formattedDate = DateUtils.format(date, GLOBAL.settings.dateFormat);
             this.files.push({ date: formattedDate, file });
         }
     }
@@ -47,7 +48,7 @@ class Report {
     getTimeline(filter = null) {
         let result = {};
         for (let f of this.files) {
-            let key = f.date;
+            let key = DateUtils.format(f.date, GLOBAL.settings.dateFormat);
             result[key] = f.file.getTimeline(filter)
                 .filter(x => !filter || matchTags(filter, x.tags));
         }

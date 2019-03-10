@@ -1,4 +1,4 @@
-const SESSION = require('../model/session.js');
+const GLOBAL = require('../model/global.js');
 const PRINT_MODES = require('../model/printModes.js');
 const OUTPUT_FORMAT = require('../model/outputFormat.js');
 
@@ -6,9 +6,9 @@ const Settings = require('../model/settings.js');
 const Report = require('../model/report.js');
 
 function show(type, dateFrom, dateTo, outputFormat, filter, settings) {
-    SESSION.SETTINGS = getSettings(settings);
-    let r = new Report(dateFrom || SESSION.SETTINGS.date,
-                       dateTo || SESSION.SETTINGS.date,
+    GLOBAL.settings = getSettings(settings);
+    let r = new Report(dateFrom || GLOBAL.settings.date,
+                       dateTo || GLOBAL.settings.date,
                        outputFormat || OUTPUT_FORMAT.TEXT,
                        PRINT_MODES.fromString(type));
 

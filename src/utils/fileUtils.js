@@ -7,7 +7,7 @@ function getFileNameFromDate(date) {
 
 function getFilePathFromDate(date, directory) {
     let fileName = getFileNameFromDate(date);
-    return path.join(directory, fileName);
+    return directory + fileName;
 }
 
 module.exports = {

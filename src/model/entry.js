@@ -1,4 +1,5 @@
-const SESSION = require('./session.js');
+const GLOBAL = require('./global.js');
+const Settings = require('./settings.js');
 
 class Entry {
     constructor({
@@ -7,10 +8,10 @@ class Entry {
         stop = null
     } = {}) {
         this.hour = hour;
-        this.name = stop ? SESSION.STOP_SIGN : name;
+        this.name = stop ? GLOBAL.settings.stopSign : name;
         this.tags = [];
         this.processTags();
-        this.stop = stop || name.includes(SESSION.STOP_SIGN);
+        this.stop = stop || name.includes(GLOBAL.settings.stopSign);
     }
 
     processTags() {
@@ -23,7 +24,7 @@ class Entry {
         this.hour =  chunks[0];
         this.name = chunks.slice(1, chunks.length).join(' ');
 
-        if (this.name.includes(SESSION.STOP_SIGN))
+        if (this.name.includes(GLOBAL.settings.stopSign))
             this.stop = true;
 
         this.processTags();

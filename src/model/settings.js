@@ -1,11 +1,9 @@
-const path = require('path');
-
 const FileUtils = require('../utils/fileUtils.js');
 const DateUtils = require('../utils/dateUtils.js');
 
 const SESSION = require('./session.js');
-const OUTPUT_FORMAT = require('./outputFormat.js');
 
+const STOP_SIGN = '---STOP---';
 const HOUR_FORMATS = {
     12: 'hh:mmA',
     24: 'HH:mm'
@@ -19,10 +17,16 @@ class Settings {
         this.directory = directory;
         this.fileName = FileUtils.getFileNameFromDate(date);
         this.currentFilePath = FileUtils.getFilePathFromDate(date, directory);
-
-        this.hourFormatString = HOUR_FORMATS[this.hourFormat];
-        this.hour = DateUtils.getHour(this.date, this.hourFormatString);
         this.caseInsensitiveTags = caseInsensitiveTags;
+        this.stopSign = STOP_SIGN;
+    }
+
+    getHourFormatString() {
+        return HOUR_FORMATS[this.hourFormat];
+    } 
+
+    getHour() { 
+        return DateUtils.getHour(this.date, this.getHourFormatString());
     }
 }
 
