@@ -4,14 +4,10 @@ const program = require('commander');
 const colors = require('colors');
 
 const PROGRAM_VERSION = require('../package.json').version;
-const OUTPUT_FORMAT = require('./model/outputFormat.js');
-const PRINT_MODES = require('./model/printModes.js');
 
-const File = require('./model/file.js');
-const Entry = require('./model/entry.js');
-const Settings = require('./model/settings.js');
-const Report = require('./model/report.js');
-const SESSION = require('./model/session.js');
+const start = require('./commands/start.js');
+const stop = require('./commands/stop.js');
+const show = require('./commands/show.js');
 
 program.option('--dir <dir>', '[required]'.bold + ' set working directory')
     .description('time.txt - simple, text-based time tracking app inspired by todo.txt project')
@@ -43,38 +39,6 @@ program.command('stop')
 
 program.parse(process.argv);
 
-function show(type, dateFrom, dateTo, outputFormat, filter, settings) {
-    SESSION.SETTINGS = getSettings(settings);
-    let r = new Report(dateFrom || SESSION.SETTINGS.date,
-                       dateTo || SESSION.SETTINGS.date,
-                       outputFormat || OUTPUT_FORMAT.TEXT,
-                       PRINT_MODES.fromString(type));
-
-    let f = null;
-    if (filter)
-        f = filter.split(';');
-
-    return r.generate(f);
-}
-
-function start(name, settings) {
-    SESSION.SETTINGS = getSettings(settings);
-    let f = loadFile();
-    addEntryAndSave(f, new Entry({
-        hour: SESSION.SETTINGS.hour,
-        name: name
-    }));
-}
-
-function stop(settings) {
-    SESSION.SETTINGS = getSettings(settings);
-    let f = loadFile();
-    addEntryAndSave(f, new Entry({
-        hour: SESSION.SETTINGS.hour,
-        name: SESSION.STOP_SIGN
-    }));
-}
-
 function help(commandName) {
     if (!commandName)
         return program.helpInformation();
@@ -85,21 +49,6 @@ function help(commandName) {
         return command.helpInformation();
 
     return null;
-}
-
-function getSettings({dir, date, dateFormat, hourFormat, caseInsensitiveTags}) {
-    return new Settings(dir, date, dateFormat, hourFormat, caseInsensitiveTags);
-}
-
-function loadFile() {
-    let f = new File(SESSION.SETTINGS.currentFilePath);
-    f.load();
-    return f;
-}
-
-function addEntryAndSave(f, entry) {
-    f.addEntry(entry);
-    f.save();
 }
 
 module.exports = {
