@@ -10,7 +10,7 @@ function show(type, dateFrom, dateTo, outputFormat, filter, settings) {
     let r = new Report(dateFrom || GLOBAL.settings.date,
                        dateTo || GLOBAL.settings.date,
                        outputFormat || OUTPUT_FORMAT.TEXT,
-                       PRINT_MODES.fromString(type));
+                       type);
 
     let f = null;
     if (filter)

@@ -1,11 +1,14 @@
 const GLOBAL = require('./global.js');
 
-class Entry {
+class FileEntry {
     constructor(hour, name, stop = null) {
         this.hour = hour;
         this.name = name;
-        this.tags = [];
-        this.processTags();
+        
+        this.tags = this.name
+            .split(' ')
+            .filter(c => c.startsWith('+'));
+
         this.stop = stop || name.includes(GLOBAL.settings.stopSign);
     }
 
@@ -13,12 +16,7 @@ class Entry {
         let chunks = str.split(' ');
         let hour =  chunks[0];
         let name = chunks.slice(1, chunks.length).join(' ');
-        return new Entry(hour, name);
-    }
-
-    processTags() {
-        let chunks = this.name.split(' ');
-        this.tags = chunks.filter(c => c.startsWith('+'));
+        return new FileEntry(hour, name);
     }
 
     toString() {
@@ -26,4 +24,4 @@ class Entry {
     }
 }
 
-module.exports = Entry;
+module.exports = FileEntry;

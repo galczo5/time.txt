@@ -1,7 +1,6 @@
 const GLOBAL = require('../model/global.js');
 
 const File = require('../model/file.js');
-const Entry = require('../model/entry.js');
 const Settings = require('../model/settings.js');
 
 function stop(settings) {

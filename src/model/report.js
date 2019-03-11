@@ -7,7 +7,8 @@ const GLOBAL = require('./global.js');
 const DateUtils = require('../utils/dateUtils.js');
 const FileUtils = require('../utils/fileUtils.js');
 const File = require('./file.js');
-const Settings = require('./settings.js');
+const TimelineEntry = require('./timelineEntry.js');
+const ByTagDifference = require('./byTagDifference.js');
 
 function matchTags(filter, tags) {
     if (GLOBAL.settings.caseInsensitiveTags) {
@@ -48,7 +49,7 @@ class Report {
         let result = {};
         for (let f of this.files) {
             let key = DateUtils.format(f.date, GLOBAL.settings.dateFormat);
-            result[key] = f.file.getTimeline(filter)
+            result[key] = this.fgetTimeline(f.file)
                 .filter(x => !filter || matchTags(filter, x.tags));
         }
 
@@ -58,7 +59,7 @@ class Report {
     getTags(filter = null) {
         let result = {};
         for (let f of this.files) {
-            let tags = f.file.getTags(filter);
+            let tags = this.fgetTags(f.file);
             tags.forEach(t => {
                 if (filter && !matchTags(filter, [t.tag]))
                     return;
@@ -117,6 +118,52 @@ class Report {
             result.tags = tags;
 
         return JSON.stringify(result, null, 2);
+    }
+
+    fgetTimeline(file) {
+        let timelineEntries = [];
+        for (let i = 0; i < file.entries.length; i++) {
+            if (file.entries[i].stop)
+                continue;
+
+            timelineEntries.push(new TimelineEntry(file.entries[i], file.entries[i + 1]));
+        }
+
+        return timelineEntries;
+    }
+
+    fgetTags(file) {
+        let byTags = {};
+        for (let i = 0; i < file.entries.length; i++) {
+            if (file.entries[i].stop)
+                continue;
+
+            let { hoursDiff, minutesDiff } = this.getEntriesProps(file.entries, i);
+
+            file.entries[i].tags.forEach(t => {
+                if (t in byTags) {
+                    byTags[t].addTime(hoursDiff, minutesDiff);
+                    return;
+                }
+
+                byTags[t] = new ByTagDifference(t, hoursDiff, minutesDiff);
+            });
+        }
+
+        return Object.values(byTags);
+    }
+
+    getEntriesProps(entries, i) {
+        let thisEntry = entries[i];
+        let nextEntry = entries[i + 1];
+
+        // TODO:
+        let endHour = nextEntry ? nextEntry.hour : GLOBAL.settings.getHour();
+
+        let hoursDiff = DateUtils.hoursDiff(thisEntry.hour, endHour, GLOBAL.settings.getHourFormatString());
+        let minutesDiff = DateUtils.minutesDiff(thisEntry.hour, endHour, GLOBAL.settings.getHourFormatString()) % 60;
+
+        return { hoursDiff, minutesDiff };
     }
 }
 
