@@ -1,17 +1,19 @@
 const GLOBAL = require('./global.js');
-const Settings = require('./settings.js');
 
 class Entry {
-    constructor({
-        hour = null,
-        name = '',
-        stop = null
-    } = {}) {
+    constructor(hour, name, stop = null) {
         this.hour = hour;
-        this.name = stop ? GLOBAL.settings.stopSign : name;
+        this.name = name;
         this.tags = [];
         this.processTags();
         this.stop = stop || name.includes(GLOBAL.settings.stopSign);
+    }
+
+    static fromString(str) {
+        let chunks = str.split(' ');
+        let hour =  chunks[0];
+        let name = chunks.slice(1, chunks.length).join(' ');
+        return new Entry(hour, name);
     }
 
     processTags() {
@@ -19,18 +21,7 @@ class Entry {
         this.tags = chunks.filter(c => c.startsWith('+'));
     }
 
-    fromString(str, settings) {
-        let chunks = str.split(' ');
-        this.hour =  chunks[0];
-        this.name = chunks.slice(1, chunks.length).join(' ');
-
-        if (this.name.includes(GLOBAL.settings.stopSign))
-            this.stop = true;
-
-        this.processTags();
-    }
-
-    toString(settings) {
+    toString() {
         return this.hour + ' ' + this.name;
     }
 }

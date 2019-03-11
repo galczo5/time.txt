@@ -21,8 +21,7 @@ function matchTags(filter, tags) {
 class Report {
     constructor(dateFrom, dateTo, outputFormat = OUTPUT_FORMAT.TEXT, printMode = PRINT_MODES.BOTH) {
         this.outputFormat = outputFormat;
-        this.includeTimeline = PRINT_MODES.timelineActive(printMode);
-        this.includeTags = PRINT_MODES.tagsActive(printMode);
+        this.printMode = printMode;
 
         
         this.dateFrom = dateFrom;
@@ -89,7 +88,7 @@ class Report {
     textReport(timeline, tags) {
         let result = '';
 
-        if (this.includeTimeline) {
+        if (this.printMode === PRINT_MODES.TIMELINE) {
             for (let date in timeline) {
                 let entries = timeline[date];
                 if (entries.length === 0)
@@ -103,7 +102,7 @@ class Report {
             }
         }
 
-        if (this.includeTags)
+        else if (this.printMode === PRINT_MODES.TAGS)
             tags.forEach(x => result += x.toString() + '\n');
 
         return result;
@@ -111,10 +110,10 @@ class Report {
 
     jsonReport(timeline, tags) {
         let result = {};
-        if (this.includeTimeline)
+        if (this.printMode === PRINT_MODES.TIMELINE)
             result.timeline = timeline;
 
-        if (this.includeTags)
+        else if (this.printMode === PRINT_MODES.TAGS)
             result.tags = tags;
 
         return JSON.stringify(result, null, 2);

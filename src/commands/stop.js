@@ -7,10 +7,8 @@ const Settings = require('../model/settings.js');
 function stop(settings) {
     GLOBAL.settings = getSettings(settings);
     let f = loadFile();
-    addEntryAndSave(f, new Entry({
-        hour: GLOBAL.settings.getHour(),
-        name: GLOBAL.settings.stopSign
-    }));
+    f.addEntry(GLOBAL.settings.getHour(), GLOBAL.settings.stopSign);
+    f.save();
 }
 
 function getSettings({dir, date, dateFormat, hourFormat, caseInsensitiveTags}) {
@@ -21,11 +19,6 @@ function loadFile() {
     let f = new File(GLOBAL.settings.currentFilePath);
     f.load();
     return f;
-}
-
-function addEntryAndSave(f, entry) {
-    f.addEntry(entry);
-    f.save();
 }
 
 module.exports = stop;

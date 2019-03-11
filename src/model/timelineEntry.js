@@ -1,6 +1,4 @@
 const GLOBAL = require('./global.js');
-
-const Settings = require('./settings.js');
 const DateUtils = require('../utils/dateUtils.js');
 
 class TimelineEntry {
@@ -31,10 +29,6 @@ class TimelineEntry {
             .join(' ');
 
         return `${period} ${timeDiff} ${text}`;
-    }
-
-    print() {
-        console.log(this.toString());
     }
 }
 

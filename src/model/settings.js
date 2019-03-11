@@ -1,8 +1,6 @@
 const FileUtils = require('../utils/fileUtils.js');
 const DateUtils = require('../utils/dateUtils.js');
 
-const SESSION = require('./session.js');
-
 const STOP_SIGN = '---STOP---';
 const HOUR_FORMATS = {
     12: 'hh:mmA',
@@ -13,7 +11,7 @@ class Settings {
     constructor(directory, date, dateFormat, hourFormat, caseInsensitiveTags = false) {
         this.dateFormat = dateFormat || 'YYYY-MM-DD';
         this.hourFormat = hourFormat || 24;
-        this.date = date || SESSION.NOW;
+        this.date = date || new Date();
         this.directory = directory;
         this.fileName = FileUtils.getFileNameFromDate(date);
         this.currentFilePath = FileUtils.getFilePathFromDate(date, directory);

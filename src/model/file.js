@@ -1,15 +1,12 @@
 const fs = require('fs');
 const colors = require('colors');
 
-const OUTPUT_FORMAT = require('./outputFormat.js');
-const PRINT_MODES = require('./printModes.js');
 const GLOBAL = require('./global.js');
 
 const Entry = require('./entry.js');
 const TimelineEntry = require('./timelineEntry.js');
 const ByTagDifference = require('./byTagDifference.js');
 const DateUtils = require('../utils/dateUtils.js');
-const Settings = require('./settings.js');
 
 class File {
     constructor(filePath) {
@@ -17,8 +14,8 @@ class File {
         this.entries = [];
     }
 
-    addEntry(entry) {
-        this.entries.push(entry);
+    addEntry(hour, name) {
+        this.entries.push(new Entry(hour, name));
         this.sortEntries();
     }
 
@@ -28,15 +25,11 @@ class File {
 
     load() {
         if (fs.existsSync(this.filePath)) {
-            let fileString = fs.readFileSync(this.filePath, 'utf8');
-            this.entries = fileString
+            let str = fs.readFileSync(this.filePath, 'utf8');
+            this.entries = str
                 .split('\n')
                 .filter(e => e.length != 0)
-                .map(e => {
-                    let entry = new Entry();
-                    entry.fromString(e);
-                    return entry;
-                });
+                .map(e => Entry.fromString(e));
         }
 
         this.sortEntries();

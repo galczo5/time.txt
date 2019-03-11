@@ -18,10 +18,6 @@ class ByTagDifference {
     toString() {
         return `[${this.hours}h ${this.minutes}m] ${this.tag.bold.red}`;
     }
-
-    print() {
-        console.log(this.toString());
-    }
 }
 
 module.exports = ByTagDifference;
