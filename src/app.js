@@ -5,9 +5,14 @@ const colors = require('colors');
 
 const PROGRAM_VERSION = require('../package.json').version;
 
+const Settings = require('./model/settings.js');
 const start = require('./commands/start.js');
 const stop = require('./commands/stop.js');
 const show = require('./commands/show.js');
+
+function prepareConfig({dir, date, dateFormat, hourFormat, caseInsensitiveTags}) {
+    return new Settings(dir, date, dateFormat, hourFormat, caseInsensitiveTags);
+}
 
 program.option('--dir <dir>', '[required]'.bold + ' set working directory')
     .description('time.txt - simple, text-based time tracking app inspired by todo.txt project')
@@ -25,17 +30,17 @@ program.command('show [timeline,tags,both]')
     .option('--filter <tags>', 'set filter by tags, value can be separated with ; sign')
     .option('--no-color', 'disable colors')
     .action((val, args) => {
-        let report = show(val, args.dateFormat, args.dateTo, args.output, args.filter, program);
+        let report = show(val, args.dateFormat, args.dateTo, args.output, args.filter, prepareConfig(program));
         console.log(report);
     });
 
 program.command('start <name>')
     .description('start new activity')
-    .action((val, args) => start(val, program));
+    .action((val, args) => start(val, prepareConfig(program)));
 
 program.command('stop')
     .description('stop current activity')
-    .action((val, args) => stop(program));
+    .action((val, args) => stop(prepareConfig(program)));
 
 program.parse(process.argv);
 

@@ -13,7 +13,7 @@ const testFileName = '20181117.txt';
 
 function getPreparedSettings(dir) {
     return {
-        dir: dir.path,
+        directory: dir.path,
         date: testDateFrom,
         dateFormat: 'YYYY-MM-DD'
     };

@@ -13,10 +13,12 @@ class Settings {
         this.hourFormat = hourFormat || 24;
         this.date = date || new Date();
         this.directory = directory;
-        this.fileName = FileUtils.getFileNameFromDate(date);
-        this.currentFilePath = FileUtils.getFilePathFromDate(date, directory);
         this.caseInsensitiveTags = caseInsensitiveTags;
         this.stopSign = STOP_SIGN;
+    }
+
+    static fromRaw({ directory, date, dateFormat, hourFormat, caseInsensitiveTags = false }) {
+        return new Settings(directory, date, dateFormat, hourFormat, caseInsensitiveTags);
     }
 
     getHourFormatString() {

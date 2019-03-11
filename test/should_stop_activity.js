@@ -12,7 +12,7 @@ const stopSign = '---STOP---';
 
 function getPreparedSettings(dir) {
     return {
-        dir: dir.path,
+        directory: dir.path,
         date: testDate
     };
 }
