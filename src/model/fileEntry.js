@@ -1,4 +1,4 @@
-const GLOBAL = require('./global.js');
+const VALUES = require('../utils/values.js');
 
 class FileEntry {
     constructor(hour, name, stop = null) {
@@ -9,7 +9,7 @@ class FileEntry {
             .split(' ')
             .filter(c => c.startsWith('+'));
 
-        this.stop = stop || name.includes(GLOBAL.settings.stopSign);
+        this.stop = stop || name.includes(VALUES.stopSign);
     }
 
     static fromString(str) {
